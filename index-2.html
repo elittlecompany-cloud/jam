@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jam Real Time</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f3d2e; /* hijau header el'egance */
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #ffffff; /* ganti ke #0f3d2e jika dipasang di atas latar terang */
+  }
+  #stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Satu blok yang diskalakan otomatis agar memenuhi seluruh kotak embed */
+  #unit {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    white-space: nowrap;
+    transform-origin: center center;
+    visibility: hidden; /* tampil setelah ukuran dihitung */
+  }
+  #time {
+    font-size: 100px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 4px solid rgba(255,255,255,.4);
+    padding-left: 28px;
+  }
+  #date { font-size: 38px; font-weight: 500; line-height: 1.15; }
+  #tz   { font-size: 30px; opacity: .75; line-height: 1.1; }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="unit">
+      <div id="time">00:00:00</div>
+      <div class="side">
+        <div id="date">-</div>
+        <div id="tz">WIB (UTC+7)</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var TZ = "Asia/Jakarta"; // WITA: "Asia/Makassar", WIT: "Asia/Jayapura"
+  var timeFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+  });
+  var dateFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+
+  var unit = document.getElementById("unit");
+  var lastDate = "";
+
+  function fit() {
+    unit.style.transform = "scale(1)";
+    var w = unit.offsetWidth, h = unit.offsetHeight;
+    var s = Math.min(window.innerWidth / w, window.innerHeight / h) * 0.94;
+    unit.style.transform = "scale(" + s + ")";
+    unit.style.visibility = "visible";
+  }
+
+  function tick() {
+    var now = new Date();
+    document.getElementById("time").textContent = timeFmt.format(now).replace(/\./g, ":");
+    var d = dateFmt.format(now);
+    if (d !== lastDate) {
+      lastDate = d;
+      document.getElementById("date").textContent = d;
+      fit(); // hitung ulang hanya saat tanggal berganti
+    }
+  }
+
+  tick();
+  fit();
+  setInterval(tick, 1000);
+  window.addEventListener("resize", fit);
+</script>
+</body>
+</html>
