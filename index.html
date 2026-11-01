@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jam Real Time</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0f3d2e; /* samakan dengan warna header dashboard */
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #ffffff;
+    overflow: hidden;
+  }
+  .wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    padding: 0 2vw;
+    box-sizing: border-box;
+  }
+  #time {
+    font-size: min(14vh, 8vw);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6vh;
+    border-left: 2px solid rgba(255,255,255,.35);
+    padding-left: 2vw;
+  }
+  #date {
+    font-size: min(5.5vh, 3vw);
+    font-weight: 500;
+  }
+  #tz {
+    font-size: min(4vh, 2.2vw);
+    opacity: .7;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="time">--:--:--</div>
+    <div class="side">
+      <div id="date">-</div>
+      <div id="tz">WIB (UTC+7)</div>
+    </div>
+  </div>
+
+<script>
+  var TZ = "Asia/Jakarta"; // ganti jika perlu, mis. "Asia/Makassar" (WITA)
+  var timeFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+  });
+  var dateFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+
+  function tick() {
+    var now = new Date();
+    document.getElementById("time").textContent = timeFmt.format(now).replace(/\./g, ":");
+    document.getElementById("date").textContent = dateFmt.format(now);
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>
